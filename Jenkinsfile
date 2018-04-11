@@ -29,6 +29,7 @@ node {
 	    commit = readFile('commit.log').split(":")[0]
     }
 
+
     stage ('kops') {
     	sh 'echo ${commit}'
 	    kops {
