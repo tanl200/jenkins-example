@@ -14,8 +14,8 @@ node {
     secondExample {}
 
     stage ('kops')
-    def kops {
+    kops {
     	action = "create"
     }
-    
+
 }
