@@ -2,7 +2,7 @@
 node {
 
 	checkout scm
-	
+
 	def commit = ''
 
 	stage ('1st') {
@@ -27,7 +27,7 @@ node {
     stage ('commit message') {
 	    commit = sh(returnStdout: true, script: '''
 	    a=\$(git log --format=%s%b -n 1 \$(git rev-parse HEAD))
-	    cut -d ':' -f1 | echo $a 
+	    echo $a | cut -d ":" -f1
 	    ''')
     }
 
