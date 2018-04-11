@@ -23,8 +23,8 @@ node {
 
 
     stage ('commit message') {
-    	def dirtyHack = "git log --format=%s%b -n 1 \$(git rev-parse HEAD) | cut -d ':' -f1"
-	    commit = sh(returnStdout: true, script: "${dirtyHack}")    
+	    commit = sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)")    
+	    commit = sh(returnStdout: true, script: "echo ${commit} | cut -d ':' -f1 ")    
     }
 
     stage ('kops') {
