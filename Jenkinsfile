@@ -1,10 +1,15 @@
 @Library('github.com/tanl200/jenkins-pipeline-library') _
 node {
 
-	checkout scm
-	
-	stage ('test')
+	stage ('1st')
 	firstExample {
 		message = 'Test stage completed, please approved for next step'
 	}
+
+    approve {
+    	approveUser = 'Test stage completed, please approved for next step'
+    }
+
+    stage ('2nd')
+    secondExample {}
 }
