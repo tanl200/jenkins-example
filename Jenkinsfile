@@ -23,9 +23,8 @@ node {
 
 
     stage ('commit message') {
-	    commit = sh(returnStdout: true, script: "git log --format=%s%b -n 1 $(git rev-parse HEAD) | cut -d ':' -f1")    
+	    commit = sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD) | cut -d ':' -f1")    
     }
-
 
     stage ('kops')
     kops {
