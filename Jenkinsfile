@@ -14,12 +14,8 @@ node {
     secondExample {}
 
     stage ('kops')
-    def result = kops {
+    def kops {
     	action = "create"
     }
-
-    if ( result == 0) {
-    	def output = readFile('create.log').trim()
-    	sh "echo ${output}"
-    }
+    
 }
