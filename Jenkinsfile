@@ -26,9 +26,12 @@ node {
 	    commit = sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD) | cut -d ':' -f1")    
     }
 
-    stage ('kops')
-    kops {
-    	action = "${commit}"
+    stage ('kops') {
+    	sh 'echo ${commit}'
+	    kops {
+	    	action = "${commit}"
+	    }    
     }
+
 
 }
