@@ -21,6 +21,5 @@ node {
     if ( result == 0) {
     	def output = readFile('create.log').trim()
     	sh "echo ${output}"
-    	currentBuild.result = 'FAILED'
     }
 }
