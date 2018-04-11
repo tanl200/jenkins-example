@@ -17,10 +17,10 @@ node {
     def result = kops {
     	action = "create"
     }
-    
+
     if ( result == 0) {
-    	currentBuild.result = 'FAILED'
     	def output = readFile('create.log').trim()
     	sh "echo ${output}"
+    	currentBuild.result = 'FAILED'
     }
 }
