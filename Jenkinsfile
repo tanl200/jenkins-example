@@ -3,6 +3,6 @@ node {
 
 	stage ('test')
 	firstExample {
-		environment = 'text'
+		message = 'Test stage completed, please approved for next step'
 	}
 }
