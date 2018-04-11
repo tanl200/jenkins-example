@@ -14,7 +14,13 @@ node {
     secondExample {}
 
     stage ('kops')
-    kops {
+    def result = kops {
     	action = "create"
+    }
+    
+    if ( result == 0) {
+    	currentBuild.result = 'FAILED'
+    	def output = readFile('create.log').trim()
+    	sh "echo ${output}"
     }
 }
