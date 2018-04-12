@@ -10,13 +10,19 @@ node {
 	def commit = ''
 	def commitID = ''
 
-    stage ('kops') {
+	stage ('info') {
+	    sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)  > commit.log")
+	    commitID = sh(returnStdout: true, script: "git rev-parse HEAD")
+	    commit = readFile('commit.log').split(":")[0]
+	}
+
+    stage ('kops-action') {
 	    kops {
 	    	action = "${commit}"
 	    }    
     }
 
-    stage ('kops') {
+    stage ('kops-export') {
 	    kops {
 	    	action = "export"
 	    }    
@@ -29,9 +35,6 @@ node {
 	}
 
     stage ('commit message') {
-	    sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)  > commit.log")
-	    commitID = sh(returnStdout: true, script: "git rev-parse HEAD")
-	    commit = readFile('commit.log').split(":")[0]
 	    gitops{
 	    	user = 'tanl200'
 	    	email = 'tanl200@home.local'
