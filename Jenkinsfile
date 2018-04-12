@@ -31,11 +31,19 @@ node {
 
 
     stage ('kops') {
-    	sh 'echo ${commit}'
 	    kops {
 	    	action = "${commit}"
 	    }    
     }
 
+    stage ('kops') {
+	    kops {
+	    	action = "export"
+	    }    
+    }
+
+    stage ('git commit') {
+    	gitops{}
+    }
 
 }
