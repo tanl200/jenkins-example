@@ -35,7 +35,7 @@ node {
 	}
 
     stage ('commit message') {
-	    gitops{
+	    gitops {
 	    	user = 'tanl200'
 	    	email = 'tanl200@home.local'
 	    	branch = "${BUILD_NUMBER}"
