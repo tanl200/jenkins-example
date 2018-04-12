@@ -2,37 +2,13 @@
 node {
 
 	deleteDir()
-	
+
 	stage ('checkout') {
 		checkout scm
 	}
 	
 	def commit = ''
-
-	stage ('1st') {
-		firstExample {
-			message = 'Test stage completed, please approved for next step'
-		}	
-	}
-
-
-	stage ('Approve') {
-	    approve {
-	    	message = 'Test stage completed, please approved for next step'
-	    }	
-	}
-
-
-    stage ('2nd') {
-	    secondExample {}    
-    }
-
-
-    stage ('commit message') {
-	    sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)  > commit.log")
-	    commit = readFile('commit.log').split(":")[0]
-    }
-
+	def commitID = ''
 
     stage ('kops') {
 	    kops {
@@ -46,8 +22,22 @@ node {
 	    }    
     }
 
-    stage ('git commit') {
-    	gitops{}
+	stage ('Approve') {
+	    approve {
+	    	message = 'Test stage completed, please approved for next step'
+	    }	
+	}
+
+    stage ('commit message') {
+	    sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)  > commit.log")
+	    commitID = sh(returnStdout: true, script: "git rev-parse HEAD")
+	    commit = readFile('commit.log').split(":")[0]
+	    gitops{
+	    	user = 'tanl200'
+	    	email = 'tanl200@home.local'
+	    	branch = '${BUILD_NUMBER}'
+	    	commitMessage = '${commitID}'
+	    }
     }
 
 }
