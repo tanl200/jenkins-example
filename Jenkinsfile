@@ -16,8 +16,8 @@ node {
 	}
 
 	stage ('info') {
-	    commitID = sh(returnStdout: true, script: "source functions.sh && getCommitID")
-	    commit = sh(returnStdout: true, script: "source functions.sh && getCommitMessageAction")
+	    commitID = sh(returnStdout: true, script: ". functions.sh && getCommitID")
+	    commit = sh(returnStdout: true, script: ". functions.sh && getCommitMessageAction")
 	}
 
     stage ('kops-action') {
