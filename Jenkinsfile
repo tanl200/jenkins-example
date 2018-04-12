@@ -10,10 +10,14 @@ node {
 	def commit = ''
 	def commitID = ''
 
+	stage ('Load Function') {
+		def functions = libraryResource 'local/suker200/functions.sh'
+		writeFile file: 'functions.sh', text: functions
+	}
+
 	stage ('info') {
-	    sh(returnStdout: true, script: "git log --format=%s%b -n 1 \$(git rev-parse HEAD)  > commit.log")
-	    commitID = sh(returnStdout: true, script: "git rev-parse HEAD")
-	    commit = readFile('commit.log').split(":")[0]
+	    commitID = sh(returnStdout: true, script: "source functions.sh && getCommitID")
+	    commit = sh(returnStdout: true, script: "source functions.sh && getCommitMessageAction")
 	}
 
     stage ('kops-action') {
@@ -41,5 +45,4 @@ node {
 	    	commitMessage = "${commitID}"
 	    }
     }
-
 }
