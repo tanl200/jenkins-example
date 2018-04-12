@@ -38,7 +38,7 @@ node {
 	    gitops{
 	    	user = 'tanl200'
 	    	email = 'tanl200@home.local'
-	    	branch = "${BUILD_NUMBER}""
+	    	branch = "${BUILD_NUMBER}"
 	    	commitMessage = "${commitID}"
 	    }
     }
