@@ -1,8 +1,12 @@
 @Library('github.com/tanl200/jenkins-pipeline-library') _
 node {
 
-	checkout scm
-
+	deleteDir()
+	
+	stage ('checkout') {
+		checkout scm
+	}
+	
 	def commit = ''
 
 	stage ('1st') {
