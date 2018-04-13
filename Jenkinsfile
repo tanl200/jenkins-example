@@ -5,7 +5,7 @@ def stageC(name, enable) {
 	}
 }
 
-stage ('Kops') {
+def stage ('Kops') {
     sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
     sh(returnStdout: true, script: ". ./functions.sh && runKops")
 
