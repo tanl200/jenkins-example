@@ -93,4 +93,4 @@ def Kops(config, template, project):
 	OutputFile("CLUSTER_NAME={}".format(config.get('CLUSTER_NAME')), "{}/ENV".format(project),
 		
 if __name__ == '__main__':
-    Kops()
+	Kops()
