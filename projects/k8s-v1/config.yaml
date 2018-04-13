@@ -1,0 +1,144 @@
+K8S_VERSION: 1.9.3
+CLUSTER_NAME: k8s.suker200.local
+CLUSTER_DNS_ZONE: ZONEDNS
+CLUSTER_S3_BUCKET: S3_BUCKET
+VPC_ID: xxxx
+VPC_NETWORK: 10.101.0.0/16
+# ADDITIONAL_SG:
+#   - sg-57948b21
+
+TERRAFORM_VARS:
+  region: "us-east-1"
+  port_allow: "80,81,443,4443,9999"
+
+TAGS:
+  brand: devops
+  project: k8s
+  team: cloud-vn
+ETCD_CLUSTERS:
+  - encryptedVolume: true
+    instanceGroup: master-us-east-1a
+    name: a
+  - encryptedVolume: true
+    instanceGroup: master-us-east-1b
+    name: b
+  - encryptedVolume: true
+    instanceGroup: master-us-east-1c
+    name: c
+SUBNETS:
+  - cidr: 10.101.0.0/22
+    name: utility-us-east-1a
+    type: Utility
+    zone: us-east-1a
+  - cidr: 10.101.4.0/22
+    name: utility-us-east-1b
+    type: Utility
+    zone: us-east-1b
+  - cidr: 10.101.8.0/22
+    name: utility-us-east-1c
+    type: Utility
+    zone: us-east-1c
+  - cidr: 10.101.12.0/22
+    name: us-east-1a
+    type: Private
+    zone: us-east-1a
+  - cidr: 10.101.16.0/22
+    name: us-east-1b
+    type: Private
+    zone: us-east-1b
+  - cidr: 10.101.20.0/22
+    name: us-east-1c
+    type: Private
+    zone: us-east-1c
+
+INSTANCE_GROUPS:
+  - name: master-us-east-1a
+    role: Master
+    instance_type: m4.xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1b
+    
+  - name: master-us-east-1b
+    role: Master
+    instance_type: m4.xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1b
+
+  - name: master-us-east-1c
+    role: Master
+    instance_type: m4.xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1c
+
+  - name: ingress-internal-tcp
+    role: Node
+    instance_type: c4.xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1a
+    - us-east-1b
+    - us-east-1c
+    taints:
+    - ingress=internal:NoSchedule
+    - type=tcp:NoSchedule
+
+  - name: ingress-external-tcp
+    role: Node
+    instance_type: c4.xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1a
+    - us-east-1b
+    - us-east-1c
+    taints:
+    - ingress=external:NoSchedule
+    - type=tcp:NoSchedule
+
+  - name: ingress-external-l7
+    role: Node
+    instance_type: c4.xlarge
+    instance_image: xxx
+    tag: {}
+    subnets: 
+    - us-east-1a
+    - us-east-1b
+    - us-east-1c
+    taints:
+    - ingress=external:NoSchedule
+    - type=l7:NoSchedule
+
+  - name: MEM-1a
+    role: Node
+    instance_type: m4.2xlarge
+    instance_image: image
+    tag: {}
+    subnets: 
+    - us-east-1a
+    taints:
+    - type=MEM:NoSchedule
+
+  - name: MEM-1b
+    role: Node
+    instance_type: m4.2xlarge
+    instance_image: image
+    subnets:
+    - us-east-1b
+    taints:
+    - type=MEM:NoSchedule
+
+  - name: MEM-1c
+    role: Node
+    instance_type: m4.2xlarge
+    instance_image: image
+    subnets:
+    - us-east-1c
+    taints:
+    - type=MEM:NoSchedule

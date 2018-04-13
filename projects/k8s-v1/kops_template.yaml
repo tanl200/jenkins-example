@@ -1,0 +1,208 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  name: {{ CLUSTER_NAME }}
+spec:
+  ### Systemd auto append DOCKER 
+  hooks:
+  - name: docker0_nat.service
+    roles:
+    - Node
+    - Master
+    before:
+    - kubelet.service
+    manifest: |
+      Type=oneshot
+      ExecStart=/sbin/iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -j MASQUERADE
+#   additionalSecurityGroups:
+# {%- for sg in ADDITIONAL_SG %}
+#     - {{ sg }}
+# {%- endfor %}
+  api:
+    loadBalancer:
+      type: Internal
+  authorization:
+    rbac: {}
+  channel: stable
+  cloudLabels:
+{%- for key, value in TAGS.items() %}
+    {{ key }}: {{ value }}
+{%- endfor %}
+  cloudProvider: aws
+  configBase: {{ CLUSTER_S3_BUCKET }}
+  dnsZone: {{ CLUSTER_DNS_ZONE }}
+  etcdClusters:
+  - etcdMembers:
+{%- for etcd in ETCD_CLUSTERS %}
+    -
+    {%- for key, value in etcd.items() %}
+      {{ key }}: {{ value }}
+    {%- endfor %}
+{%- endfor %}
+    name: main
+  - etcdMembers:
+{%- for etcd in ETCD_CLUSTERS %}
+    -
+    {%- for key, value in etcd.items() %}
+      {{ key }}: {{ value }}
+    {%- endfor %}
+{%- endfor %}
+    name: events
+  fileAssets:
+  - content: |
+      apiVersion: audit.k8s.io/v1beta1 # This is required.
+      kind: Policy
+      # Don't generate audit events for all requests in RequestReceived stage.
+      omitStages:
+        - "RequestReceived"
+      rules:
+        # Log pod changes at RequestResponse level
+        - level: RequestResponse
+          resources:
+          - group: ""
+            # Resource "pods" doesn't match requests to any subresource of pods,
+            # which is consistent with the RBAC policy.
+            resources: ["pods"]
+        # Log "pods/log", "pods/status" at Metadata level
+        - level: Metadata
+          resources:
+          - group: ""
+            resources: ["pods/log", "pods/status"]
+
+        # Don't log requests to a configmap called "controller-leader"
+        - level: None
+          resources:
+          - group: ""
+            resources: ["configmaps"]
+            resourceNames: ["controller-leader"]
+
+        # Don't log watch requests by the "system:kube-proxy" on endpoints or services
+        - level: None
+          users: ["system:kube-proxy"]
+          verbs: ["watch"]
+          resources:
+          - group: "" # core API group
+            resources: ["endpoints", "services"]
+
+        # Don't log authenticated requests to certain non-resource URL paths.
+        - level: None
+          userGroups: ["system:authenticated"]
+          nonResourceURLs:
+          - "/api*" # Wildcard matching.
+          - "/version"
+
+        # Log the request body of configmap changes in kube-system.
+        - level: Request
+          resources:
+          - group: "" # core API group
+            resources: ["configmaps"]
+          # This rule only applies to resources in the "kube-system" namespace.
+          # The empty string "" can be used to select non-namespaced resources.
+          namespaces: ["kube-system"]
+
+        # Log configmap and secret changes in all other namespaces at the Metadata level.
+        - level: Metadata
+          resources:
+          - group: "" # core API group
+            resources: ["secrets", "configmaps"]
+
+        # Log all other resources in core and extensions at the Request level.
+        - level: Request
+          resources:
+          - group: "" # core API group
+          - group: "extensions" # Version of group should NOT be included.
+
+        # A catch-all rule to log all other requests at the Metadata level.
+        - level: Metadata
+          # Long-running requests like watches that fall under this rule will not
+          # generate an audit event in RequestReceived.
+          omitStages:
+            - "RequestReceived"
+    name: iptable-restore
+    path: /etc/kubernetes/audit.yaml
+    roles:
+    - Master
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubeAPIServer:
+    admissionControl:
+    - NamespaceLifecycle
+    - LimitRanger
+    - ServiceAccount
+    - PersistentVolumeLabel
+    - DefaultStorageClass
+    - DefaultTolerationSeconds
+    - ResourceQuota
+    - LimitPodHardAntiAffinityTopology
+  kubelet:
+    featureGates:
+      ExpandPersistentVolumes: "true"
+      TaintNodesByCondition: "true"
+    systemReserved:
+      cpu: 100m
+      ephemeral-storage: 1Gi
+      memory: 500Mi
+    systemReservedCgroup: /system-reserved
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: {{ K8S_VERSION }}
+  masterInternalName: api.internal.{{ CLUSTER_NAME }}
+  masterPublicName: api.{{ CLUSTER_NAME }}
+  networkCIDR: {{ VPC_NETWORK }}
+  networkID: {{ VPC_ID }}
+  networking:
+    calico: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 10.100.0.0/16
+  subnets:
+{%- for subnet in SUBNETS %}
+    -
+    {%- for key, value in subnet.items() %}
+      {{ key }}: {{ value }}
+    {%- endfor %}
+{%- endfor %}
+  topology:
+    dns:
+      type: Public
+    masters: private
+    nodes: private
+{%- for ig in INSTANCE_GROUPS %}
+---
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  name: {{ ig.name }}
+  labels:
+    kops.k8s.io/cluster: {{ CLUSTER_NAME }}
+spec:
+  cloudLabels:
+{%- for key, value in TAGS.items() %}
+    {{ key }}: {{ value }}
+{%- endfor %}
+{%- if ig.get('tag') %}
+{%- for key, value in ig.get('tag').items()  %}
+    {{ key }}: {{ value }}
+{%- endfor %}
+{%- endif %}
+    k8s.io/cluster-autoscaler/enabled: "true"
+    kubernetes.io/cluster/{{ CLUSTER_NAME }}: "true"
+    kops.k8s.io/cluster: {{ CLUSTER_NAME }}
+  image: {{ ig.instance_image }}
+  machineType: {{ ig.instance_type }}
+  maxSize: 50
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: {{ ig.name }}
+  role: {{ ig.role }}
+  rootVolumeSize: 50
+  subnets:
+{%- for subnet in ig.subnets %}
+    - {{ subnet }}
+{%- endfor %}
+  taints:
+{%- for taint in ig.taints %}
+    - {{ taint }}
+{%- endfor %}
+{%- endfor %}
