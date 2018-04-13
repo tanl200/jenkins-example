@@ -21,7 +21,7 @@ node {
 
 
 	if (opsType=="kops") {
-		def stage ('Deploy Kops') {
+		stage ('Deploy Kops') {
 		    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
 		    sh(returnStdout: true, script: ". ./functions.sh && runKops")
 
@@ -30,7 +30,7 @@ node {
 		    }    
 		}
 
-		def stage('Deploy Kops Terraform') {
+		stage('Deploy Kops Terraform') {
 			sh('echo 123')		
 		}
 
