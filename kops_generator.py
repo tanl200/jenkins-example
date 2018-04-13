@@ -90,7 +90,7 @@ def Kops(config, template, project):
 	config = LoadConfig(config)
 	RenderKopsTemplate(config, template, "{}/kops_cluster.yaml".format(kops_dir))
 	RenderTerraformVarsFile(config, "{}/terraform.auto.tfvars".format(non_kops_dir))
-	OutputFile("CLUSTER_NAME={}".format(config.get('CLUSTER_NAME')), "{}/ENV".format(project))
+	OutputFile("CLUSTER_NAME={}".format(config.get('CLUSTER_NAME')), "projects/{}/ENV".format(project))
 		
 if __name__ == '__main__':
 	Kops()
