@@ -15,7 +15,7 @@ node {
 		def functions = libraryResource 'local/suker200/functions.sh'
 		writeFile file: 'functions.sh', text: functions
 	    commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID")
-	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType")
+	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType").trim()
 	}
 
 	if (opsType=="kops") {
