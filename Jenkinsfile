@@ -16,7 +16,7 @@ node {
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType")
 	}
 
-	if (opsType=='kops') {
+	if (${opsType}=='kops') {
 	    stage ('Kops') {
 		    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
 		    sh(returnStdout: true, script: ". ./functions.sh && runKops")
