@@ -14,9 +14,10 @@ node {
 		writeFile file: 'functions.sh', text: functions
 	    commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID")
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType")
+	    sh('echo ${opsType}')
 	}
 
-	if ("${opsType}"=='kops') {
+	if ("${opsType}"=="kops") {
 	    stage ('Kops') {
 		    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
 		    sh(returnStdout: true, script: ". ./functions.sh && runKops")
