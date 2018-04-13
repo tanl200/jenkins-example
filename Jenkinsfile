@@ -8,6 +8,7 @@ node {
 	}
 	
 	def commitID = ''
+	def opsType = ''
 
 	stage ('Prepare') {
 		def functions = libraryResource 'local/suker200/functions.sh'
@@ -16,17 +17,14 @@ node {
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType")
 	}
 
-    stage ('Kops') {
-    	when {
-    		equal expected: 'kops'
-    		actual: "${opsType}"
-    	}
-    	
-	    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
-	    sh(returnStdout: true, script: ". ./functions.sh && runKops")
+	if (${opsType}=='kops') {
+	    stage ('Kops') {
+		    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
+		    sh(returnStdout: true, script: ". ./functions.sh && runKops")
 
-	    approve {
-	    	message = 'Kops stage completed, please approved for next step'
-	    }
+		    approve {
+		    	message = 'Kops stage completed, please approved for next step'
+		    }
+	    }	
     }
 }
