@@ -17,18 +17,16 @@ node {
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType")
 	}
 
-	stage ('test') {
-		sh("echo ${opsType}")
-	}
-	
-	if ("${opsType}"=='kops') {
-	    stage ('Kops') {
-		    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
-		    sh(returnStdout: true, script: ". ./functions.sh && runKops")
+    stage ('Kops', false) {
+	    sh(returnStdout: true, script: ". ./functions.sh && prepareKops")
+	    sh(returnStdout: true, script: ". ./functions.sh && runKops")
 
-		    approve {
-		    	message = 'Kops stage completed, please approved for next step'
-		    }
-	    }	
+	    approve {
+	    	message = 'Kops stage completed, please approved for next step'
+	    }
     }
+
+	def stage(name,) {
+		return stage(name)
+	}
 }
