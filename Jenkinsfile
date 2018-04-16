@@ -42,7 +42,7 @@ node {
 	}
 
 	stage ('run') {
-		stageWrapper('taskA', true)
+		stageWrapper('taskA', false)
 		stageWrapper('taskB', true)
 	}	
 }
