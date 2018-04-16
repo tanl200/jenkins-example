@@ -30,9 +30,7 @@ node {
 	stage ('TEST') {
 	    notify {
 	        slackChannel = "k8s-build"
-	        message = "http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
-	        title = "http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
-	        title_link = "https://vnexpress.net"
+	        message = "${JOB_NAME} - ${BUILD_NUMBER} KOPS Plan: http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
 	    }
 	}
 }
