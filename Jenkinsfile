@@ -25,10 +25,6 @@ node {
 
 	deleteDir()
 
-	def scmVar = checkout scm
-	def commitHash = scmVar.GIT_COMMIT
-	def branch = scmVar.branchs[0].name
-
 	def opsType = ''
 	def action = ''
 
