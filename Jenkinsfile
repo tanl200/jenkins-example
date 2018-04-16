@@ -36,18 +36,16 @@ node {
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType").trim()
 	}
 
-	if (false) {
+	if (enablea) {
 		stage ('taskA') {
 			println "okie taskA"
 		}
+	}
 
+	if (enableb) {
 		stage ('taskB') {
 			println "okie taskB"
 		}
 	}
 
-	stage ('run') {
-		stageWrapper('taskA', true)
-		stageWrapper('taskB', true)
-	}	
 }
