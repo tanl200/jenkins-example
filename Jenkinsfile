@@ -28,7 +28,6 @@ node {
 		writeFile file: 'functions.sh', text: functions
 	    commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType").trim()
-	    action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
 	}
 
 	if (false) {
@@ -38,7 +37,6 @@ node {
 		}
 
 		stage ('taskB') {
-			action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
 			sh('echo taskB okie')		
 		}
 	}
