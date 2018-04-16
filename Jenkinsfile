@@ -13,10 +13,14 @@ def stageWrapper(name, enable) {
 	}
 }
 
+def stage(name, execute, block) {
+    return stage(name, execute ? block : {echo "skipped stage $name"})
+}
+
 node {
 
 	deleteDir()
-	stage ('checkout') {
+	stage ('checkout', true) {
 		checkout scm
 	}
 	def opsType = ''
@@ -25,7 +29,7 @@ node {
 	def enablea = false
 	def enableb = false
 
-	stage ('Prepare') {
+	stage ('Prepare', true) {
 		def functions = libraryResource 'local/suker200/functions.sh'
 		writeFile file: 'functions.sh', text: functions
 	    commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
