@@ -41,6 +41,18 @@ node {
 	    action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
 	}
 
+	if (false) {
+		stage ('taskA') {
+			commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
+			sh('echo taskA okie')			
+		}
+
+		stage ('taskB') {
+			action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
+			sh('echo taskB okie')		
+		}
+	}
+	
 	stage ('run') {
 		stageWrapper('taskA', false)
 		stageWrapper('taskB', true)
