@@ -33,16 +33,16 @@ node {
 			action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
 			sh('echo taskB okie')		
 		}
-
-		def stageWrapper(name, enable) {
-			if (enable) {
-				return stage(name)
-			} else {
-				return sh('echo Bypass')
-			}	
-		}
 	}
 
+	def stageWrapper(name, enable) {
+		if (enable) {
+			return stage(name)
+		} else {
+			return sh('echo Bypass')
+		}
+	}
+	
 	stage ('run') {
 		stageWrapper('taskA', false)
 		stageWrapper('taskB', true)
