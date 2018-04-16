@@ -30,9 +30,9 @@ node {
 	stage ('TEST') {
 	    notify {
 	        slackChannel = "k8s-build"
-	        message = """${JOB_NAME} - ${BUILD_NUMBER} (${BUILD_URL})"""
-	        title = "${JOB_NAME} - ${BUILD_NUMBER} [KOPS]: Terraform Plan File"
-	        title_link = "http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
+	        message = "xxxx"
+	        title = "uuu"
+	        title_link = "hhhhhh"
 	    }
 	}
 }
