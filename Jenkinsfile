@@ -15,10 +15,12 @@ def stageWrapper(name, enable) {
 
 def taskA() {
 	commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
+	sh('echo taskA okie')
 }
 
 def taskB() {
 	action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
+	sh('echo taskB okie')
 }
 
 node {
