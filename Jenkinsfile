@@ -5,6 +5,14 @@ def getGitBranchName() {
     return scm.branches[0].name
 }
 
+def stageWrapper(name, enable) {
+	if (enable) {
+		return stage(name)
+	} else {
+		return sh('echo Bypass')
+	}
+}
+
 node {
 
 	deleteDir()
@@ -35,16 +43,8 @@ node {
 		}
 	}
 
-	def stageWrapper(name, enable) {
-		if (enable) {
-			return stage(name)
-		} else {
-			return sh('echo Bypass')
-		}
-	}
-	
 	stage ('run') {
-		stageWrapper('taskA', false)
+		stageWrapper('taskA', true)
 		stageWrapper('taskB', true)
 	}	
 }
