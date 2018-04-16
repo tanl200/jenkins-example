@@ -32,7 +32,7 @@ node {
 	        slackChannel = "k8s-build"
 	        message = "xxxx"
 	        title = "uuu"
-	        title_link = "hhhhhh"
+	        title_link = "xxxx"
 	    }
 	}
 }
