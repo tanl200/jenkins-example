@@ -16,7 +16,9 @@ def stageWrapper(name, enable) {
 node {
 
 	deleteDir()
-
+	stage ('checkout') {
+		checkout scm
+	}
 	def opsType = ''
 	def action = ''
 
