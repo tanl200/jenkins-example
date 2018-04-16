@@ -25,7 +25,7 @@ node {
 	}
 
 	stage ('Test') {
-		sh('echo $commitHash')
-		sh('echo $branch')
+		sh("echo $commitHash")
+		sh("echo $branch")
 	}
 }
