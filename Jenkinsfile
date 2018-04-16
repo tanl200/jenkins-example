@@ -32,7 +32,7 @@ node {
 	        slackChannel = "k8s-build"
 	        message = "xxxx"
 	        title = "uuu"
-	        title_link = "https://vnexpress.net"
+	        title_link = "https://vnexpress.net/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
 	    }
 	}
 }
