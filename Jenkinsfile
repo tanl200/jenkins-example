@@ -38,12 +38,11 @@ node {
 
 	if (false) {
 		stage ('taskA') {
-			commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
-			sh('echo taskA okie')			
+			println "okie taskA"
 		}
 
 		stage ('taskB') {
-			sh('echo taskB okie')		
+			println "okie taskB"
 		}
 	}
 
