@@ -5,18 +5,20 @@ def getGitBranchName() {
     return scm.branches[0].name
 }
 
+def applyTerraform(functionFile, ) {
+	
+}
+
 node {
 
 	deleteDir()
 
-	stage ('checkout') {
-		checkout scm
-	}
-	
-	def commitID = ''
+	def scmVar = checkout scm
+	def commitHash = scmVar.GIT_COMMIT
+	def branch = scmVar.branchs[0].name
+
 	def opsType = ''
 	def action = ''
-	def branch = ''
 
 	stage ('Prepare') {
 		def functions = libraryResource 'local/suker200/functions.sh'
@@ -24,20 +26,10 @@ node {
 	    commitID = sh(returnStdout: true, script: ". ./functions.sh && getCommitID").trim()
 	    opsType = sh(returnStdout: true, script: ". ./functions.sh && getOpsType").trim()
 	    action = sh(returnStdout: true, script: ". ./functions.sh && getCommitAction").trim()
-    	branch = getGitBranchName()
 	}
 
-	stage ('TEST') {
-	    slackSend(
-	    	channel: "#k8s-build",
-	    	message: """${JOB_NAME} - ${BUILD_NUMBER} KOPS Plan: http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"""
-	    )
-
-
-/*	    notify {
-	        slackChannel = "k8s-build"
-	        message = "${JOB_NAME} - ${BUILD_NUMBER} KOPS Plan: http://127.0.0.1:25478/files/k8s-v1-${JOB_NAME}-${BUILD_NUMBER}-kops?token=${UPLOAD_TOKEN}"
-	    }
-*/
+	stage ('Test') {
+		sh('echo $commitHash')
+		sh('echo $branch')
 	}
 }
