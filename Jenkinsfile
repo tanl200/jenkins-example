@@ -37,10 +37,10 @@ node {
 	    actionType = sh(returnStdout: true, script: ". ./functions.sh && getActionType").trim()
 	}
 
-	if (actionType=='destroy_cluster') {
+	if (opsType=='kops' && actionType=='destroy_cluster') {
 		println ("destroy cluster okie")
 	}
-	
+
 	if (enablea) {
 		stage ('taskA') {
 			println "okie taskA"
